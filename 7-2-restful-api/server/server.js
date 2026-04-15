@@ -28,7 +28,19 @@ app.use(express.json());
       });
 
 // /api/songs/:id (Update song)
-
+      app.put("/api/songs/:id", async (req, res) => {
+        try {
+          const updated = await Song.findByIdAndUpdate(
+            req.params.id,
+            req.body || {},
+            { new: true, runValidators: true, context: "update" }
+          );
+          if (!updated) return res.status(404).json({ message: "Song not found" });
+          res.json(updated);
+        } catch (err) {
+          res.status(400).json({ message: err.message || "Error updating song" });
+        }
+      });
 
 // /api/songs/:id (Delete song)
 
